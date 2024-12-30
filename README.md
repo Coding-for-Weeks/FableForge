@@ -66,7 +66,7 @@ Welcome to the **DnD Campaign Game**, a Python-based, text-driven adventure insp
 
 ### 📝 Logging
 
-Errors and warnings are logged to `game.log`. Ensure the script has write permissions for the log file.
+- Errors and warnings are logged to `game.log`. Ensure the script has write permissions for the log file.
 
 ### ✨ Customization
 
