@@ -15,6 +15,10 @@ def clear_console():
     command = commands.get(platform.system(), "clear")
     subprocess.run(command, shell=True)
 
+def exiting():
+    clear_console()
+    os._exit(0)
+
 def setup_logging():
     log_file = "game.log"
     logging.basicConfig(
@@ -27,7 +31,6 @@ def setup_logging():
 
 setup_logging()
 
-# Database Management
 class DatabaseManager:
     def __init__(self, db_name="dnd_game.db"):
         self.db_name = db_name
@@ -78,7 +81,7 @@ class DatabaseManager:
             for table, create_sql in tables.items():
                 cursor.execute(create_sql)
 
-# Console Utilities
+
 class Console:
     @staticmethod
     def menu_handler(title, options):
@@ -105,7 +108,6 @@ class Console:
         print("\033[91mInvalid choice. Please try again.\033[0m")
         input("\033[1mPress Enter to continue...\033[0m")
 
-# Character Creation
 class CharacterCreator:
     @staticmethod
     def get_character_name():
@@ -221,26 +223,60 @@ class CharacterCreator:
     def random_stats():
         return {key: random.randint(8, 18) for key in ["strength", "dexterity", "intelligence", "charisma", "wisdom", "constitution"]}
 
-# Main Game Loop
 def main_menu():
     options = [
         {"label": "Create a new character", "action": create_character},
         {"label": "Play", "action": play_game},
-        {"label": "Exit", "action": lambda: os._exit(0)},
+        {"label": "Exit", "action": exiting},
     ]
     Console.menu_handler("Main Menu", options)
 
+# Display Character Creation Menu
 def create_character():
     name = CharacterCreator.get_character_name()
     race, subrace = CharacterCreator.select_race()
     char_class = CharacterCreator.select_class()
     stats = CharacterCreator.generate_stats()
-    print("Character creation complete! Saving to database...")
-    # Add save logic here
+
+    clear_console()
+    print("\033[94mCharacter creation complete! Here are your details:\033[0m\n")
+    print(f"\033[91mName:\033[0m {name}")
+    print(f"\033[91mRace:\033[0m {race} {'(' + subrace + ')' if subrace else ''}")
+    print(f"\033[91mClass:\033[0m {char_class}")
+    print("\033[94mStats:\033[0m")
+    for stat, value in stats.items():
+        print(f"  \033[91m{stat.capitalize()}\033[0m: {value}")
+    input("\n\033[93mPress Enter to continue...\033[0m")
+    
+    # Save character to database
+    db_manager = DatabaseManager()
+    with db_manager.connect() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO characters (name, race, class, strength, dexterity, intelligence, charisma, wisdom, constitution, health, experience)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                name,
+                f"{race} ({subrace})" if subrace else race,
+                char_class,
+                stats["strength"],
+                stats["dexterity"],
+                stats["intelligence"],
+                stats["charisma"],
+                stats["wisdom"],
+                stats["constitution"],
+                100,  # Default health
+                0,    # Default experience
+            ),
+        )
+        conn.commit()
 
 def play_game():
+    clear_console()
     print("Starting game...")
-    # Add gameplay logic here
+    input("\n\033[93mPress Enter to continue...\033[0m")
 
 if __name__ == "__main__":
     db_manager = DatabaseManager()
