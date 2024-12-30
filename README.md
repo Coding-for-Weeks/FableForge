@@ -1,6 +1,6 @@
-# 🐉 DnD Campaign Game
+# 🐉 FableForge
 
-Welcome to the **DnD Campaign Game**, a Python-based, text-driven adventure inspired by Dungeons & Dragons! Create characters, complete quests, and explore a world full of possibilities. 🧙‍♂️✨
+Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dungeons & Dragons! Create characters, complete quests, and explore a world full of possibilities. 🧙‍♂️✨
 
 ---
 
@@ -89,4 +89,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ---
 
-✨ **Enjoy your adventure in the DnD campaign game!** 🎲
+✨ **Enjoy your adventure in FableForge!** 🎲
