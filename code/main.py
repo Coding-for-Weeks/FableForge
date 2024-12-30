@@ -33,7 +33,7 @@ class CharacterCreator:
     @staticmethod
     def get_character_name():
         clear_console()
-        print("\033[94mWelcome to Character Creation!\033[0m")
+        print("\033[94mFableForge - Character Creation!\033[0m")
         return input("\n\033[93mEnter your character's name: \033[0m").strip()
 
     @staticmethod
@@ -61,7 +61,7 @@ class CharacterCreator:
 
     @staticmethod
     def print_races(races):
-        print("\033[94mAvailable Races:\033[0m\n")
+        print("\033[94mFableForge - Available Races:\033[0m\n")
         for race, subraces in races.items():
             print(f"\033[91m{race}\033[0m")
             for subrace in subraces:
@@ -100,6 +100,7 @@ class CharacterCreator:
 
     @staticmethod
     def print_classes(basic_classes, adv_classes):
+        print("\033[94mFableForge - Available Classes:\033[0m\n")
         print(f"\033[94m{'Basic Classes:':<20} {'Advanced Classes:':<20}\033[0m\n")
         max_len = max(len(basic_classes), len(adv_classes))
         for i in range(max_len):
@@ -112,7 +113,7 @@ class CharacterCreator:
         options = {"1": "manual", "2": "random"}
         while True:
             clear_console()
-            print("\033[94mChoose stat generation method:\033[0m\n")
+            print("\033[94mFableForge - Stat generation method:\033[0m\n")
             print("\033[91m1. Manually distribute points\033[0m")
             print("\033[91m2. Generate random stats\033[0m")
             choice = input("\n\033[93mEnter your choice: \033[0m").strip()
@@ -150,7 +151,7 @@ def main_menu():
         {"label": "Play", "action": play_game},
         {"label": "Exit", "action": exiting},
     ]
-    Console.menu_handler("FableForge Main Menu", options)
+    Console.menu_handler("FableForge - Main Menu", options)
 
 # Display Character Creation Menu
 def create_character():
@@ -160,7 +161,8 @@ def create_character():
     stats = CharacterCreator.generate_stats()
 
     clear_console()
-    print("\033[94mCharacter creation complete! Here are your details:\033[0m\n")
+    print("\033[94mFableForge - Character Summary!\033[0m")
+    print("\033[94mCharacter Details:\033[0m\n")
     print(f"\033[91mName:\033[0m {name}")
     print(f"\033[91mRace:\033[0m {race} {'(' + subrace + ')' if subrace else ''}")
     print(f"\033[91mClass:\033[0m {char_class}")
@@ -223,17 +225,39 @@ class Play:
 
 def play_game():
     options = [
-        {"label": "Character Menu", "action": character_view},
+        {"label": "Character Menu", "action": character},
         {"label": "Quest Menu", "action": quest_menu},
         {"label": "Inventory Menu", "action": inventory_menu},
         {"label": "Back to main menu", "action": main_menu},
     ]
     Play.play_game("FableForge - Play", options)
 
-def character_view():
+def character():
     clear_console()
-    print("\033[91mUnder construction...\033[0m")
-    input("\n\033[93mPress Enter to continue...\033[0m")
+    options = [
+        {"label": "Choose Character", "action": character_choice},
+        {"label": "Update Character", "action": update_character},
+        {"label": "Delete Character", "action": delete_character},
+        {"label": "Back to Play Menu", "action": play_game},
+    ]
+    Play.play_game("FableForge - Character Menu", options)
+
+def character_choice():
+    clear_console()
+    print("\033[94mFableForge - Choose Character!\033[0m")
+    
+
+def update_character():
+    clear_console()
+    print("\033[94mFableForge - Choose Character!\033[0m")
+    print("\033[93mUnder Construction.....\033[0m\n")
+    input("\033[93mPress Enter to continue...\033[0m")
+
+def delete_character():
+    clear_console()
+    print("\033[94mFableForge - Choose Character!\033[0m")
+    print("\033[93mUnder Construction.....\033[0m\n")
+    input("\033[93mPress Enter to continue...\033[0m")
 
 def quest_menu():
     clear_console()

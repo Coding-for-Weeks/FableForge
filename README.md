@@ -1,4 +1,4 @@
-# 🐉 FableForge
+# 🔱 FableForge
 
 Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dungeons & Dragons! Create characters, complete quests, and explore a world full of possibilities. 🧙‍♂️✨
 
@@ -20,7 +20,7 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
 
 ---
 
-## 🏗️ Project Structure
+## 🔧 Project Structure
 
 ### 🛠️ Classes and Functions
 
@@ -46,6 +46,12 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
   - `create_character()`: Handles the character creation process.
   - `play_game()`: Placeholder for the game loop (to be implemented).
 
+### 📚 Files
+
+- **`main.py`**: The entry point of the application. It handles the main menu, character creation, and initialization.
+- **`database_manager.py`**: Manages the SQLite database, including connection handling and table initialization.
+- **`utilities.py`**: Contains utility functions for logging, console management, and exiting the application.
+
 ---
 
 ## 🚀 Getting Started
@@ -64,7 +70,7 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
    python main.py
    ```
 
-### 📝 Logging
+### 🖍️ Logging
 
 - Errors and warnings are logged to `game.log`. Ensure the script has write permissions for the log file.
 
@@ -90,3 +96,4 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ---
 
 ✨ **Enjoy your adventure in FableForge!** 🎲
+
