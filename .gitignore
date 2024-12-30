@@ -1,3 +1,36 @@
-.vs
+# Byte-compiled files and caches
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment
+env/
+venv/
+
+# System-specific files
+.vs/
+.DS_Store
+
+# SQLite database files
 *.db
+
+# Log files
 *.log
+
+# Other IDE/Editor specific files
+.idea/
+*.swp
+*.swo
+
+# Python-specific cache and test output
+*.egg-info/
+.eggs/
+.coverage
+.cache/
+
+# Temporary files and folders
+*.tmp
+*.bak
+*.old
+*.swp
+*.swo
