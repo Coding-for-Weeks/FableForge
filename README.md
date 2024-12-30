@@ -1,4 +1,4 @@
-# DnD Campaign Game - `main.py`
+# DnD Campaign Game
 
 This Python script is a text-based Dungeons & Dragons (DnD) campaign game that allows players to create characters, embark on quests, and explore a fantasy world through a console interface. It leverages SQLite for data storage and includes features like character creation, menu navigation, and stat management.
 
