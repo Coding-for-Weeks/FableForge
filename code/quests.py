@@ -47,13 +47,6 @@ def list_quests():
     ]
     Play.play_game("FableForge - Quests", options)
 
-
-
-def add_quest():
-    clear_console()
-    print("Add a Quest")
-    input("Press Enter to continue...")
-
 def complete_quest():
     clear_console()
     print("Complete a Quest")
