@@ -2,12 +2,13 @@ from fableforge.utilities import clear_console
 from fableforge.database_manager import DatabaseManager
 from fableforge.quest_one import quest_one
 from fableforge.quest_two import quest_two
+from fableforge.style import BLUE, RED, YELLOW, RESET
 
 def choose_character():
     """Return the selected character row or ``None`` if selection fails."""
 
     clear_console()
-    print("\033[94mFableForge - Choose Character!\033[0m")
+    print(f"{BLUE}FableForge - Choose Character!{RESET}")
 
     db_manager = DatabaseManager()
     with db_manager.connect() as conn:
@@ -16,15 +17,15 @@ def choose_character():
         characters = cursor.fetchall()
 
         if not characters:
-            print("\n\033[91mNo characters found in the database.\033[0m")
-            input("\033[93mPress Enter to return...\033[0m")
+            print(f"\n{RED}No characters found in the database.{RESET}")
+            input(f"{YELLOW}Press Enter to return...{RESET}")
             return None
 
-        print("\n\033[94mAvailable Characters:\033[0m\n")
+        print(f"\n{BLUE}Available Characters:{RESET}\n")
         for cid, name, race, char_class in characters:
-            print(f"\033[91m{cid}. {name}\033[0m | Race: {race} | Class: {char_class}")
+            print(f"{RED}{cid}. {name}{RESET} | Race: {race} | Class: {char_class}")
 
-        selected = input("\n\033[93mEnter character ID: \033[0m").strip()
+        selected = input(f"\n{YELLOW}Enter character ID: {RESET}").strip()
 
         if selected.isdigit():
             selected_id = int(selected)
@@ -33,8 +34,8 @@ def choose_character():
             if character:
                 return character
 
-    print("\033[91mInvalid ID. Returning to the quest menu.\033[0m")
-    input("\033[93mPress Enter to continue...\033[0m")
+    print(f"{RED}Invalid ID. Returning to the quest menu.{RESET}")
+    input(f"{YELLOW}Press Enter to continue...{RESET}")
     return None
 
 
@@ -58,12 +59,12 @@ def inventory_menu():
         clear_console()
         items = db_manager.get_inventory(char_id)
         if items:
-            print(f"\033[94m{name}'s Inventory:\033[0m\n")
+            print(f"{BLUE}{name}'s Inventory:{RESET}\n")
             for item, qty in items:
-                print(f"\033[91m{item}\033[0m x{qty}")
+                print(f"{RED}{item}{RESET} x{qty}")
         else:
-            print("\033[91mInventory is empty.\033[0m")
-        input("\n\033[93mPress Enter to continue...\033[0m")
+            print(f"{RED}Inventory is empty.{RESET}")
+        input(f"\n{YELLOW}Press Enter to continue...{RESET}")
 
     def add_item():
         clear_console()
@@ -75,7 +76,7 @@ def inventory_menu():
             qty = 1
         db_manager.add_item(char_id, item, qty)
         print("\nItem added!")
-        input("\033[93mPress Enter to continue...\033[0m")
+        input(f"{YELLOW}Press Enter to continue...{RESET}")
 
     def remove_item():
         clear_console()
@@ -87,7 +88,7 @@ def inventory_menu():
             qty = 1
         db_manager.remove_item(char_id, item, qty)
         print("\nItem removed (if it existed).")
-        input("\033[93mPress Enter to continue...\033[0m")
+        input(f"{YELLOW}Press Enter to continue...{RESET}")
 
     from fableforge.main import Console
     options = [
