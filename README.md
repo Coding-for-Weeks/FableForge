@@ -64,10 +64,10 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
 ### ▶️ Running the Game
 
 1. Clone the repository or copy the script.
-2. Run the script using Python:
+2. From the project root, launch the game module with Python:
 
    ```bash
-   python main.py
+   python -m fableforge.main
    ```
 
 ### 🖍️ Logging
