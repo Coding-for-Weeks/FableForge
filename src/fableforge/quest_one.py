@@ -1,5 +1,12 @@
 from fableforge.utilities import clear_console
 
+# Style constants
+CYAN = "\033[96m"
+YELLOW = "\033[93m"
+BLUE = "\033[94m"
+GREEN = "\033[92m"
+RED = "\033[91m"
+RESET = "\033[0m"
 
 def quest_one(character):
     """Play the opening quest with short branching choices."""
@@ -8,7 +15,7 @@ def quest_one(character):
     name = character[1] if character else "Adventurer"
 
     intro_text = f"""
-\033[94mFableForge - Whispers of the Crystal Shard\033[0m
+{BLUE}FableForge - Whispers of the Crystal Shard{RESET}
 
 A chilling wind sweeps through the bustling market of Lyrinhold, carrying an
 eerie melody that only a few can hear. Among them is {name}. The haunting tune
@@ -20,23 +27,32 @@ As the whispers grow louder, a hooded figure draws near.
 seek it will stop at nothing." With that warning, the figure melts into the
 crowd, leaving you at a crossroads.
 """
+
     print(intro_text.strip())
-    print("\033[94m1.\033[0m Follow the hooded figure")
-    print("\033[94m2.\033[0m Stay in the market")
-    choice = input("\n\033[93mChoose your path: \033[0m").strip()
-    
+
+    print(f"\n{GREEN}1.{RESET} Follow the hooded figure")
+    print(f"{GREEN}2.{RESET} Stay in the market")
+    print(f"{GREEN}3.{RESET} Search for guards")
+    print(f"{GREEN}4.{RESET} Try to recall any lore about the shard")
+    print(f"{GREEN}5.{RESET} Do nothing, remain still")
+
+    valid_choices = {"1", "2", "3", "4", "5"}
+    choice = ""
+
+    while choice not in valid_choices:
+        choice = input(f"\n{YELLOW}Choose your path: {RESET}").strip()
+
+    print()
+
     if choice == "1":
-        print(
-            f"\n{name} pushes through the crowd, trying to catch another glimpse "
-            "of the mysterious stranger."
-    
-        )
+        print(f"{name} pushes through the crowd, trying to catch another glimpse of the mysterious stranger.")
     elif choice == "2":
-        print(
-            f"\n{name} ignores the whispers and focuses on the bustling market "
-            "around them."
-        )
-    else:
-        print("\033[91mIndecision grips you, and the opportunity slips away.\033[0m")
-    
-    input("\033[93mPress Enter to continue...\033[0m")
+        print(f"{name} ignores the whispers and focuses on the bustling market around them.")
+    elif choice == "3":
+        print(f"{name} seeks out the city guards, hoping they know more about the hooded figure or the shard.")
+    elif choice == "4":
+        print(f"{name} searches their memory for stories and legends that match the whispers.")
+    elif choice == "5":
+        print(f"{name} stands frozen, trying to make sense of everything. The crowd moves around them like a river.")
+
+    input(f"\n{YELLOW}Press Enter to continue...{RESET}")

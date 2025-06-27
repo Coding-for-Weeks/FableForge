@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import sqlite3
 import random
 from fableforge.utilities import clear_console, exiting, setup_logging
 from fableforge.database_manager import DatabaseManager
@@ -220,39 +219,13 @@ def create_character():
         print("\n\033[94mCharacter saved to database!\033[0m")
         input("\n\033[93mPress Enter to continue...\033[0m")
 
-class Play:
-    @staticmethod
-    def play_game(title, options):
-        while True:
-            clear_console()
-            Play.print_menu(title, options)
-            choice = input("\n\033[93mChoose an option: \033[0m").strip()
-            if choice.isdigit() and 1 <= int(choice) <= len(options):
-                action = options[int(choice) - 1]["action"]
-                if action is None:
-                    return
-                action()
-            else:
-                Play.invalid_choice()
-
-    @staticmethod
-    def print_menu(title, options):
-        print(f"\033[1m\033[94m{title}\033[0m\n")
-        for i, option in enumerate(options, start=1):
-            print(f"\033[1m\033[91m{i}. {option['label']}\033[0m")
-
-    @staticmethod
-    def invalid_choice():
-        print("\033[91mInvalid choice. Please try again.\033[0m")
-        input("\033[1mPress Enter to continue...\033[0m")
-
 def play_game():
     options = [
         {"label": "Character Menu", "action": character},
         {"label": "Quest Menu", "action": quest_menu},
         {"label": "Back to main menu", "action": main_menu},
     ]
-    Play.play_game("FableForge - Play", options)
+    Console.menu_handler("FableForge - Play", options)
 
 def character():
     clear_console()
@@ -261,7 +234,7 @@ def character():
         {"label": "Delete Character", "action": delete_character},
         {"label": "Back to Play Menu", "action": play_game},
     ]
-    Play.play_game("FableForge - Character Menu", options)
+    Console.menu_handler("FableForge - Character Menu", options)
 
 
 def character_choice():
@@ -303,6 +276,11 @@ def character_choice():
             print(f"  \033[91m{stat}\033[0m: {value}")
         print(f"\033[91mHealth:\033[0m {character[10]}")
         print(f"\033[91mExperience:\033[0m {character[11]}")
+        inventory = db_manager.get_inventory(character[0])
+        if inventory:
+            print("\n\033[94mInventory:\033[0m")
+            for item, qty in inventory:
+                print(f"  \033[91m{item}\033[0m x{qty}")
     else:
         print("\033[91mInvalid Name. Returning to the main menu.\033[0m")
     input("\n\033[93mPress Enter to continue...\033[0m")

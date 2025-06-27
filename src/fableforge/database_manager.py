@@ -57,3 +57,60 @@ class DatabaseManager:
                 cursor.execute(create_sql)
 
             conn.commit()
+
+
+    # Inventory management -------------------------------------------------
+
+    def add_item(self, character_id, item_name, quantity=1):
+        """Add ``quantity`` of ``item_name`` to ``character_id``'s inventory."""
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT id, quantity FROM inventory WHERE character_id = ? AND item_name = ?",
+                (character_id, item_name),
+            )
+            row = cursor.fetchone()
+            if row:
+                cursor.execute(
+                    "UPDATE inventory SET quantity = ? WHERE id = ?",
+                    (row[1] + quantity, row[0]),
+                )
+            else:
+                cursor.execute(
+                    "INSERT INTO inventory (item_name, quantity, character_id) VALUES (?, ?, ?)",
+                    (item_name, quantity, character_id),
+                )
+            conn.commit()
+
+    def remove_item(self, character_id, item_name, quantity=1):
+        """Remove ``quantity`` of ``item_name`` from ``character_id``'s inventory."""
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT id, quantity FROM inventory WHERE character_id = ? AND item_name = ?",
+                (character_id, item_name),
+            )
+            row = cursor.fetchone()
+            if row:
+                remaining = row[1] - quantity
+                if remaining > 0:
+                    cursor.execute(
+                        "UPDATE inventory SET quantity = ? WHERE id = ?",
+                        (remaining, row[0]),
+                    )
+                else:
+                    cursor.execute(
+                        "DELETE FROM inventory WHERE id = ?",
+                        (row[0],),
+                    )
+                conn.commit()
+
+    def get_inventory(self, character_id):
+        """Return a list of ``(item_name, quantity)`` for ``character_id``."""
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT item_name, quantity FROM inventory WHERE character_id = ?",
+                (character_id,),
+            )
+            return cursor.fetchall()
