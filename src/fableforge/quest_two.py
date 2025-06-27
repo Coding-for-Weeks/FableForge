@@ -1,4 +1,4 @@
-from code.src.fableforge.utilities import clear_console
+from src.fableforge.utilities import clear_console
 
 
 def quest_two():
