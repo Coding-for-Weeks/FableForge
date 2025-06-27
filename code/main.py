@@ -241,14 +241,6 @@ def character():
     ]
     Play.play_game("FableForge - Character Menu", options)
 
-def character():
-    clear_console()
-    options = [
-        {"label": "Choose Character", "action": character_choice},
-        {"label": "Delete Character", "action": delete_character},
-        {"label": "Back to Play Menu", "action": play_game},
-    ]
-    Play.play_game("FableForge - Character Menu", options)
 
 def character_choice():
     clear_console()

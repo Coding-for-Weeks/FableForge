@@ -30,7 +30,7 @@ class Play:
         input("\033[1mPress Enter to continue...\033[0m")
 
 def quest_menu():
-    from main import play_game
+    from __main__ import play_game
     options = [
         {"label": "List Quests", "action": list_quests},
         {"label": "Complete Quest", "action": complete_quest},
