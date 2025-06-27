@@ -1,12 +1,5 @@
 from fableforge.utilities import clear_console
-
-# Style constants
-CYAN = "\033[96m"
-YELLOW = "\033[93m"
-BLUE = "\033[94m"
-GREEN = "\033[92m"
-RED = "\033[91m"
-RESET = "\033[0m"
+from fableforge.style import CYAN, YELLOW, BLUE, GREEN, RED, RESET
 
 def quest_one(character):
     """Play the opening quest with short branching choices."""
