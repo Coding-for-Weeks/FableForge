@@ -4,6 +4,7 @@ import random
 from fableforge.utilities import clear_console, exiting, setup_logging
 from fableforge.database_manager import DatabaseManager
 from fableforge.quests import quest_menu
+from fableforge.style import BOLD, BLUE, RED, YELLOW, RESET
 
 class Console:
     @staticmethod
@@ -11,7 +12,7 @@ class Console:
         while True:
             clear_console()
             Console.print_menu(title, options)
-            choice = input("\n\033[93mChoose an option: \033[0m").strip()
+            choice = input(f"\n{YELLOW}Choose an option: {RESET}").strip()
             if choice.isdigit() and 1 <= int(choice) <= len(options):
                 action = options[int(choice) - 1]["action"]
                 if action is None:
@@ -22,21 +23,21 @@ class Console:
 
     @staticmethod
     def print_menu(title, options):
-        print(f"\033[1m\033[94m{title}\033[0m\n")
+        print(f"{BOLD}{BLUE}{title}{RESET}\n")
         for i, option in enumerate(options, start=1):
-            print(f"\033[1m\033[91m{i}. {option['label']}\033[0m")
+            print(f"{BOLD}{RED}{i}. {option['label']}{RESET}")
 
     @staticmethod
     def invalid_choice():
-        print("\033[91mInvalid choice. Please try again.\033[0m")
-        input("\033[1mPress Enter to continue...\033[0m")
+        print(f"{RED}Invalid choice. Please try again.{RESET}")
+        input(f"{BOLD}Press Enter to continue...{RESET}")
 
 class CharacterCreator:
     @staticmethod
     def get_character_name():
         clear_console()
-        print("\033[94mFableForge - Character Creation!\033[0m")
-        return input("\n\033[93mEnter your character's name: \033[0m").strip()
+        print(f"{BLUE}FableForge - Character Creation!{RESET}")
+        return input(f"\n{YELLOW}Enter your character's name: {RESET}").strip()
 
     @staticmethod
     def select_race():
@@ -55,7 +56,7 @@ class CharacterCreator:
         while True:
             clear_console()
             CharacterCreator.print_races(races)
-            race_input = input(f"\n\033[93mEnter your race: \033[0m").strip().title()
+            race_input = input(f"\n{YELLOW}Enter your race: {RESET}").strip().title()
             if race_input in races:
                 return CharacterCreator.select_subrace(race_input, races[race_input])
             else:
@@ -63,11 +64,11 @@ class CharacterCreator:
 
     @staticmethod
     def print_races(races):
-        print("\033[94mFableForge - Available Races:\033[0m\n")
+        print(f"{BLUE}FableForge - Available Races:{RESET}\n")
         for race, subraces in races.items():
-            print(f"\033[91m{race}\033[0m")
+            print(f"{RED}{race}{RESET}")
             for subrace in subraces:
-                print(f"  \033[94m- {subrace}\033[0m")
+                print(f"  {BLUE}- {subrace}{RESET}")
 
     @staticmethod
     def select_subrace(race, subraces):
@@ -75,10 +76,10 @@ class CharacterCreator:
             return race, None
         while True:
             clear_console()
-            print(f"\033[94mAvailable Subraces for {race}:\033[0m\n")
+            print(f"{BLUE}Available Subraces for {race}:{RESET}\n")
             for subrace in subraces:
-                print(f"  \033[91m- {subrace}\033[0m")
-            subrace_input = input(f"\n\033[93mEnter your subrace: \033[0m").strip().title()
+                print(f"  {RED}- {subrace}{RESET}")
+            subrace_input = input(f"\n{YELLOW}Enter your subrace: {RESET}").strip().title()
             if subrace_input in subraces:
                 return race, subrace_input
             else:
@@ -94,7 +95,7 @@ class CharacterCreator:
         while True:
             clear_console()
             CharacterCreator.print_classes(basic_classes, adv_classes)
-            class_input = input(f"\n\033[93mChoose your class: \033[0m").strip().capitalize()
+            class_input = input(f"\n{YELLOW}Choose your class: {RESET}").strip().capitalize()
             if class_input in basic_classes + adv_classes:
                 return class_input
             else:
@@ -102,23 +103,23 @@ class CharacterCreator:
 
     @staticmethod
     def print_classes(basic_classes, adv_classes):
-        print("\033[94mFableForge - Available Classes:\033[0m\n")
-        print(f"\033[94m{'Basic Classes:':<20} {'Advanced Classes:':<20}\033[0m\n")
+        print(f"{BLUE}FableForge - Available Classes:{RESET}\n")
+        print(f"{BLUE}{'Basic Classes:':<20} {'Advanced Classes:':<20}{RESET}\n")
         max_len = max(len(basic_classes), len(adv_classes))
         for i in range(max_len):
             basic = basic_classes[i] if i < len(basic_classes) else ""
             advanced = adv_classes[i] if i < len(adv_classes) else ""
-            print(f"\033[91m{basic:<20} {advanced:<20}\033[0m")
+            print(f"{RED}{basic:<20} {advanced:<20}{RESET}")
 
     @staticmethod
     def generate_stats():
         options = {"1": "manual", "2": "random"}
         while True:
             clear_console()
-            print("\033[94mFableForge - Stat generation method:\033[0m\n")
-            print("\033[91m1. Manually distribute points\033[0m")
-            print("\033[91m2. Generate random stats\033[0m")
-            choice = input("\n\033[93mEnter your choice: \033[0m").strip()
+            print(f"{BLUE}FableForge - Stat generation method:{RESET}\n")
+            print(f"{RED}1. Manually distribute points{RESET}")
+            print(f"{RED}2. Generate random stats{RESET}")
+            choice = input(f"\n{YELLOW}Enter your choice: {RESET}").strip()
             if choice in options:
                 return CharacterCreator.manual_stats() if options[choice] == "manual" else CharacterCreator.random_stats()
             else:
@@ -183,14 +184,14 @@ def create_character():
     stats = CharacterCreator.generate_stats()
 
     clear_console()
-    print("\033[94mFableForge - Character Summary!\033[0m")
-    print("\033[94mCharacter Details:\033[0m\n")
-    print(f"\033[91mName:\033[0m {name}")
-    print(f"\033[91mRace:\033[0m {race} {'(' + subrace + ')' if subrace else ''}")
-    print(f"\033[91mClass:\033[0m {char_class}")
-    print("\033[94mStats:\033[0m")
+    print(f"{BLUE}FableForge - Character Summary!{RESET}")
+    print(f"{BLUE}Character Details:{RESET}\n")
+    print(f"{RED}Name:{RESET} {name}")
+    print(f"{RED}Race:{RESET} {race} {'(' + subrace + ')' if subrace else ''}")
+    print(f"{RED}Class:{RESET} {char_class}")
+    print(f"{BLUE}Stats:{RESET}")
     for stat, value in stats.items():
-        print(f"  \033[91m{stat.capitalize()}\033[0m: {value}")
+        print(f"  {RED}{stat.capitalize()}{RESET}: {value}")
     
     # Save character to database
     db_manager = DatabaseManager()
@@ -216,8 +217,8 @@ def create_character():
             ),
         )
         conn.commit()
-        print("\n\033[94mCharacter saved to database!\033[0m")
-        input("\n\033[93mPress Enter to continue...\033[0m")
+        print(f"\n{BLUE}Character saved to database!{RESET}")
+        input(f"\n{YELLOW}Press Enter to continue...{RESET}")
 
 def play_game():
     options = [
@@ -239,7 +240,7 @@ def character():
 
 def character_choice():
     clear_console()
-    print("\033[94mFableForge - Choose Character!\033[0m")
+    print(f"{BLUE}FableForge - Choose Character!{RESET}")
     
     db_manager = DatabaseManager()
     with db_manager.connect() as conn:
@@ -248,46 +249,46 @@ def character_choice():
         characters = cursor.fetchall()
         
         if not characters:
-            print("\n\033[91mNo characters found in the database.\033[0m")
-            input("\033[93mPress Enter to return to the main menu...\033[0m")
+            print(f"\n{RED}No characters found in the database.{RESET}")
+            input(f"{YELLOW}Press Enter to return to the main menu...{RESET}")
             return
         
-        print("\n\033[94mAvailable Characters:\033[0m\n")
+        print(f"\n{BLUE}Available Characters:{RESET}\n")
         for char in characters:
             name, race, char_class = char
-            print(f"\033[91mName:\033[0m {name} | \033[91mRace:\033[0m {race} | \033[91mClass:\033[0m {char_class}")
+            print(f"{RED}Name:{RESET} {name} | {RED}Race:{RESET} {race} | {RED}Class:{RESET} {char_class}")
         
-        print("\n\033[94mSelect a character by entering their name.\033[0m")
-        selected_name = input("\033[93mEnter character name: \033[0m").strip()
+        print(f"\n{BLUE}Select a character by entering their name.{RESET}")
+        selected_name = input(f"{YELLOW}Enter character name: {RESET}").strip()
         
         cursor.execute("SELECT * FROM characters WHERE name = ? COLLATE NOCASE", (selected_name,))
         character = cursor.fetchone()
         
     if character:
         clear_console()
-        print("\033[94mCharacter Details:\033[0m\n")
-        print(f"\033[91mName:\033[0m {character[1]}")
-        print(f"\033[91mRace:\033[0m {character[2]}")
-        print(f"\033[91mClass:\033[0m {character[3]}")
-        print(f"\033[94mStats:\033[0m")
+        print(f"{BLUE}Character Details:{RESET}\n")
+        print(f"{RED}Name:{RESET} {character[1]}")
+        print(f"{RED}Race:{RESET} {character[2]}")
+        print(f"{RED}Class:{RESET} {character[3]}")
+        print(f"{BLUE}Stats:{RESET}")
         for stat, value in zip(
             ["Strength", "Dexterity", "Intelligence", "Charisma", "Wisdom", "Constitution"], character[4:10]
         ):
-            print(f"  \033[91m{stat}\033[0m: {value}")
-        print(f"\033[91mHealth:\033[0m {character[10]}")
-        print(f"\033[91mExperience:\033[0m {character[11]}")
+            print(f"  {RED}{stat}{RESET}: {value}")
+        print(f"{RED}Health:{RESET} {character[10]}")
+        print(f"{RED}Experience:{RESET} {character[11]}")
         inventory = db_manager.get_inventory(character[0])
         if inventory:
-            print("\n\033[94mInventory:\033[0m")
+            print(f"\n{BLUE}Inventory:{RESET}")
             for item, qty in inventory:
-                print(f"  \033[91m{item}\033[0m x{qty}")
+                print(f"  {RED}{item}{RESET} x{qty}")
     else:
-        print("\033[91mInvalid Name. Returning to the main menu.\033[0m")
-    input("\n\033[93mPress Enter to continue...\033[0m")
+        print(f"{RED}Invalid Name. Returning to the main menu.{RESET}")
+    input(f"\n{YELLOW}Press Enter to continue...{RESET}")
 
 def delete_character():
     clear_console()
-    print("\033[94mFableForge - Delete Character!\033[0m")
+    print(f"{BLUE}FableForge - Delete Character!{RESET}")
     
     db_manager = DatabaseManager()
     with db_manager.connect() as conn:
@@ -296,17 +297,17 @@ def delete_character():
         characters = cursor.fetchall()
         
         if not characters:
-            print("\n\033[91mNo characters found in the database.\033[0m")
-            input("\033[93mPress Enter to return to the main menu...\033[0m")
+            print(f"\n{RED}No characters found in the database.{RESET}")
+            input(f"{YELLOW}Press Enter to return to the main menu...{RESET}")
             return
         
-        print("\n\033[94mAvailable Characters:\033[0m\n")
+        print(f"\n{BLUE}Available Characters:{RESET}\n")
         for char in characters:
             name, race, char_class = char
-            print(f"\033[91mName:\033[0m {name} | \033[91mRace:\033[0m {race} | \033[91mClass:\033[0m {char_class}")
+            print(f"{RED}Name:{RESET} {name} | {RED}Race:{RESET} {race} | {RED}Class:{RESET} {char_class}")
         
-        print("\n\033[94mSelect a character to delete by entering their name.\033[0m")
-        selected_name = input("\033[93mEnter character name: \033[0m").strip()
+        print(f"\n{BLUE}Select a character to delete by entering their name.{RESET}")
+        selected_name = input(f"{YELLOW}Enter character name: {RESET}").strip()
         
         cursor.execute("SELECT * FROM characters WHERE name = ? COLLATE NOCASE", (selected_name,))
         character = cursor.fetchone()
@@ -315,10 +316,10 @@ def delete_character():
             cursor.execute("DELETE FROM characters WHERE name = ? COLLATE NOCASE", (selected_name,))
             conn.commit()
             clear_console()
-            print(f"\033[91mCharacter {selected_name} has been deleted.\033[0m")
+            print(f"{RED}Character {selected_name} has been deleted.{RESET}")
         else:
-            print("\033[91mInvalid Name. Returning to the main menu.\033[0m")
-    input("\n\033[93mPress Enter to continue...\033[0m")
+            print(f"{RED}Invalid Name. Returning to the main menu.{RESET}")
+    input(f"\n{YELLOW}Press Enter to continue...{RESET}")
 
 def main():
     """Entry point for the FableForge command line interface."""

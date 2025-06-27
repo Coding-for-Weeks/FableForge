@@ -115,5 +115,3 @@ class DatabaseManager:
                 (character_id,),
             )
             return cursor.fetchall()
-        
-    #
