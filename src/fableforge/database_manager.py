@@ -3,7 +3,9 @@ import os
 
 class DatabaseManager:
     def __init__(self, db_name="dnd_game.db"):
-        root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        root_dir = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
         db_dir = os.path.join(root_dir, "data")
         os.makedirs(db_dir, exist_ok=True)
         self.db_name = os.path.join(db_dir, db_name)

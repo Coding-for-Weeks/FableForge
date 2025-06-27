@@ -2,9 +2,9 @@
 
 import sqlite3
 import random
-from src.fableforge.utilities import clear_console, exiting, setup_logging
-from database_manager import DatabaseManager
-from src.fableforge.quests import quest_menu
+from fableforge.utilities import clear_console, exiting, setup_logging
+from fableforge.database_manager import DatabaseManager
+from fableforge.quests import quest_menu
 
 class Console:
     @staticmethod
@@ -127,19 +127,39 @@ class CharacterCreator:
 
     @staticmethod
     def manual_stats():
-        stats = {key: 0 for key in ["strength", "dexterity", "intelligence", "charisma", "wisdom", "constitution"]}
+        stats = {
+            key: 0
+            for key in [
+                "strength",
+                "dexterity",
+                "intelligence",
+                "charisma",
+                "wisdom",
+                "constitution",
+            ]
+        }
         total_points = 75
         print(f"You have {total_points} points to distribute (8-18 per stat):")
-        for stat in stats:
+        stat_names = list(stats.keys())
+        for index, stat in enumerate(stat_names):
+            remaining = len(stat_names) - index
             while True:
                 try:
-                    allocation = int(input(f"Allocate to {stat.capitalize()} (remaining: {total_points}): "))
-                    if 8 <= allocation <= 18 and allocation <= total_points:
+                    max_alloc = min(18, total_points - 8 * (remaining - 1))
+                    allocation = int(
+                        input(
+                            f"Allocate to {stat.capitalize()} "
+                            f"(remaining: {total_points}, max {max_alloc}): "
+                        )
+                    )
+                    if 8 <= allocation <= max_alloc:
                         stats[stat] = allocation
                         total_points -= allocation
                         break
                     else:
-                        print("Invalid allocation. Try again.")
+                        print(
+                            f"Invalid allocation. Enter a value between 8 and {max_alloc}."
+                        )
                 except ValueError:
                     print("Enter a valid number.")
         return stats

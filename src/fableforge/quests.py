@@ -1,7 +1,7 @@
-from src.fableforge.utilities import clear_console
-from database_manager import DatabaseManager
-from src.fableforge.quest_one import quest_one
-from src.fableforge.quest_two import quest_two
+from fableforge.utilities import clear_console
+from fableforge.database_manager import DatabaseManager
+from fableforge.quest_one import quest_one
+from fableforge.quest_two import quest_two
 
 class Play:
     @staticmethod
@@ -30,7 +30,7 @@ class Play:
         input("\033[1mPress Enter to continue...\033[0m")
 
 def quest_menu():
-    from __main__ import play_game
+    from fableforge.main import play_game
     options = [
         {"label": "List Quests", "action": list_quests},
         {"label": "Complete Quest", "action": complete_quest},
