@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fableforge"
+version = "0.1.0"
+description = "Text-driven D&D-style adventure game"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+
+# If you add external libs, list them here
+dependencies = [
+    # "rich>=13.0",          # example of a console library
+]
+
+# Source layout
+[tool.setuptools]
+package-dir = { "" = "src" }          # tells setuptools that packages live in src/
+packages = ["fableforge"]             # explicit list keeps it simple
+
+# Optional console command so users can just type `fableforge`
+[project.scripts]
+fableforge = "fableforge.main:main"

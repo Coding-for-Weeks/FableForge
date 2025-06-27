@@ -1,7 +1,7 @@
-from utilities import clear_console
+from code.src.fableforge.utilities import clear_console
 from database_manager import DatabaseManager
-from quest_one import quest_one
-from quest_two import quest_two
+from code.src.fableforge.quest_one import quest_one
+from code.src.fableforge.quest_two import quest_two
 
 class Play:
     @staticmethod

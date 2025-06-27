@@ -2,9 +2,9 @@
 
 import sqlite3
 import random
-from utilities import clear_console, exiting, setup_logging
+from code.src.fableforge.utilities import clear_console, exiting, setup_logging
 from database_manager import DatabaseManager
-from quests import quest_menu
+from code.src.fableforge.quests import quest_menu
 
 class Console:
     @staticmethod
