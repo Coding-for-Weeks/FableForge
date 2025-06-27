@@ -1,7 +1,9 @@
 from fableforge.utilities import clear_console
 
 
-def quest_two():
+def quest_two(character):
+    """Placeholder for a second quest."""
+
     clear_console()
     print("\033[94mFableForge - Shadows of the Lost Keep\033[0m\n")
     input("\033[93mPress Enter to continue...\033[0m")
