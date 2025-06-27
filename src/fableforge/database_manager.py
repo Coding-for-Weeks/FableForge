@@ -39,6 +39,7 @@ class DatabaseManager:
                         name TEXT NOT NULL,
                         description TEXT,
                         completed BOOLEAN NOT NULL,
+                        progress TEXT,
                         character_id INTEGER,
                         FOREIGN KEY (character_id) REFERENCES characters(id) ON DELETE CASCADE
                     )
@@ -114,3 +115,5 @@ class DatabaseManager:
                 (character_id,),
             )
             return cursor.fetchall()
+        
+    #
