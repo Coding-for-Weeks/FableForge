@@ -1,118 +1,59 @@
-🧠 agent.md — FableForge Game Agent
+# 🧠 agent.md — FableForge Game Agent
 
-This document tells ChatGPT Codex (and any future contributors) what the FableForge agent does, where to find core logic, and how to extend the project safely. Keep this file updated whenever you refactor or add major features—Codex will use it as a quick map of the codebase.
+This document helps ChatGPT Codex and future developers navigate and extend the FableForge game.
 
-📌 Purpose
+📌 Overview
 
-A single‑player, text‑driven fantasy adventure that lets users create D&D‑style characters, embark on quests, and persist progress in a SQLite database—all from the command line.
+FableForge is a single-player, fantasy role-playing game where players create characters, engage in interactive quests, and save progress in a SQLite database.
 
 🎯 Agent Responsibilities
 
-Area
+Component | Purpose | Key Classes/Functions
+----------|---------|-----------------------
+Menus     | Navigation & input | `Console.menu_handler`, `Play.play_game` (in `main.py`, `quests.py`)
+Characters| Creation & stats   | `CharacterCreator` (in `main.py`)
+Quests    | Interactive stories| `quest_menu()`, `quest_one()`, `quest_two()`
+Database  | Data persistence   | `DatabaseManager` (in `database_manager.py`)
+Utility   | Console + logging  | `clear_console()`, `setup_logging()` (in `utilities.py`)
 
-What the agent handles
+📂 File Structure
 
-Main Classes / Functions
+FableForge/
+├── data/                # SQLite database file
+├── logs/                # Logging output
+├── src/
+│   └── fableforge/
+│       ├── main.py
+│       ├── quests.py
+│       ├── quest_one.py
+│       ├── quest_two.py
+│       ├── database_manager.py
+│       └── utilities.py
 
-Menu navigation
+🗺️ Runtime Flow
 
-Print menus, capture & validate input, route to the correct action
+1. Start game → `python -m fableforge.main`
+2. `main_menu()` appears
+3. User picks:
+   - 🎭 Create Character → save to DB
+   - 🎮 Play → Character menu or Quest menu
+   - ❌ Exit
+4. Quests execute `quest_one()` or `quest_two()` stories
 
-Console.menu_handler (main.py)  /  Play.play_game (main.py & quests.py)
+🗃️ SQLite Schema Summary
 
-Character creation
+Table | Description
+------|-------------
+`characters` | Stores name, race, class, stats, health, XP
+`quests`     | Quest completion & descriptions
+`inventory`  | Items held by each character
 
-Prompt for name, race, class, and stats (manual or random)
+Tables are created by `DatabaseManager.initialize_tables()` at launch.
 
-CharacterCreator (main.py)
+➕ Extension Guide
 
-Quest flow
+- **Add a quest**: Create `quest_<name>.py` → define `quest_<name>()` → add it to `quests.py`.
+- **New classes/races**: Update lists in `CharacterCreator`.
+- **Stats or mechanics**: Expand DB schema and display logic.
 
-List quests, launch story scripts, mark completion (future)
-
-quest_menu (quests.py)  /  quest_one, quest_two
-
-Persistence
-
-SQLite connection & table setup
-
-DatabaseManager (database_manager.py)
-
-Utilities
-
-Clear console, exit cleanly, configure logging
-
-utilities.py
-
-🗂️ Project Structure at a Glance
-
-.
-├── main.py              # Entry point & top‑level menus
-├── quests.py            # Quest menu wrapper
-├── quest_one.py         # "Whispers of the Crystal Shard"
-├── quest_two.py         # "Shadows of the Lost Keep"
-├── database_manager.py  # SQLite helper
-├── utilities.py         # OS / logging helpers
-├── data/                # dnd_game.db lives here
-└── logs/                # game.log lives here (auto‑created)
-
-🔄 Typical Interaction Flow
-
-Startup → python main.py calls main_menu()
-
-Player chooses:
-
-Create Character → CharacterCreator → DB insert
-
-Play → play_game() ➜ (a) Character Menu or (b) Quest Menu
-
-Exit
-
-When a quest is selected, its narrative function (quest_one() etc.) runs; future versions will update the quests table.
-
-🗃️ Database Schema (simplified)
-
-Table
-
-Core Columns
-
-characters
-
-id, name, race, class, strength, dexterity, intelligence, charisma, wisdom, constitution, health, experience
-
-quests
-
-id, name, description, completed, character_id (FK)
-
-inventory
-
-id, item_name, quantity, character_id (FK)
-
-All tables are created automatically inside DatabaseManager.initialize_tables() if they don’t exist.
-
-➕ Extension Points
-
-Add a new quest
-
-Create quest_<slug>.py with a function quest_<slug>() that prints the narrative.
-
-Import & register it in quests.list_quests().
-
-Add new character races / classes: Edit CharacterCreator.select_race() / .select_class() arrays.
-
-Add new stats or mechanics: Update DB schema and display logic in CharacterCreator.generate_stats() and character summary.
-
-💡 Tips for ChatGPT Codex
-
-Look here first when suggesting new functions or refactoring.
-
-Mirror exact function names and menu labels defined above to stay consistent.
-
-When creating code examples, import from the modules listed under Project Structure.
-
-✅ Agent Behavior Checklist (kept in sync with code)
-
-
-
-Last Updated: 27 Jun 2025
-
+✅ Updated: 27 Jun 2025
