@@ -10,7 +10,7 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
   - Choose from various races, subraces, and classes.
   - Manually distribute or randomly generate character stats.
 - **📦 Database Integration**:
-  - Stores characters, quests, and inventory in a SQLite database (`dnd_game.db`).
+  - Stores characters, quests, and inventory in a SQLite database (`data/dnd_game.db`).
   - Automatically initializes database tables on startup.
 - **💻 Dynamic Console Interaction**:
   - User-friendly menu navigation with options for creating characters, playing the game, or exiting.
@@ -27,7 +27,7 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
 - **Utility Functions**:
   - `clear_console()`: Clears the console based on the OS.
   - `exiting()`: Clears the console and exits the game.
-  - `setup_logging()`: Sets up error logging to `game.log`.
+  - `setup_logging()`: Sets up error logging to `logs/game.log`.
 
 - **DatabaseManager**:
   - Handles database connection and initialization.
@@ -72,7 +72,7 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
 
 ### 🖍️ Logging
 
-- Errors and warnings are logged to `game.log`. Ensure the script has write permissions for the log file.
+- Errors and warnings are logged to `logs/game.log`. Ensure the script has write permissions for the log file.
 
 ### ✨ Customization
 

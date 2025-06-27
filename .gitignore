@@ -13,9 +13,11 @@ venv/
 
 # SQLite database files
 *.db
+data/
 
 # Log files
 *.log
+logs/
 
 # Other IDE/Editor specific files
 .idea/
