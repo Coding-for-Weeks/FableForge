@@ -342,8 +342,13 @@ def delete_character():
             print("\033[91mInvalid Name. Returning to the main menu.\033[0m")
     input("\n\033[93mPress Enter to continue...\033[0m")
 
-if __name__ == "__main__":
+def main():
+    """Entry point for the FableForge command line interface."""
     setup_logging()
     db_manager = DatabaseManager()
     db_manager.initialize_tables()
     main_menu()
+
+
+if __name__ == "__main__":
+    main()
