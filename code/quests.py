@@ -52,4 +52,4 @@ def complete_quest():
     print("Complete a Quest")
     input("Press Enter to continue...")
     
-    
+

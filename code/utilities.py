@@ -27,4 +27,3 @@ def setup_logging():
     if not os.access(log_file, os.W_OK):
         print(f"Warning: Cannot write to log file {log_file}. Check file permissions.")
 
-setup_logging()

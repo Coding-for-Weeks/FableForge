@@ -49,3 +49,5 @@ class DatabaseManager:
             }
             for table, create_sql in tables.items():
                 cursor.execute(create_sql)
+
+            conn.commit()
