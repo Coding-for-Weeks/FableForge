@@ -1,54 +1,52 @@
-from fableforge.utilities import clear_console
-from fableforge.database_manager import DatabaseManager
-from fableforge.quest_one import quest_one
-from fableforge.quest_two import quest_two
-from fableforge.style import BLUE, RED, YELLOW, RESET
+"""Quest launcher and inventory menu."""
+
+from fableforge.utils.utilities import clear_console
+from fableforge.data.database_manager import DatabaseManager
+from fableforge.quests.quest_one import quest_one
+from fableforge.quests.quest_two import quest_two
+from fableforge.engine.main import Console, play_game
+from rich.console import Console as RichConsole
+
+console = RichConsole()
+
 
 def choose_character():
     """Return the selected character row or ``None`` if selection fails."""
-
     clear_console()
-    print(f"{BLUE}FableForge - Choose Character!{RESET}")
-
+    console.print("[blue]FableForge - Choose Character![/blue]")
     db_manager = DatabaseManager()
     with db_manager.connect() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id, name, race, class FROM characters")
         characters = cursor.fetchall()
-
         if not characters:
-            print(f"\n{RED}No characters found in the database.{RESET}")
-            input(f"{YELLOW}Press Enter to return...{RESET}")
+            console.print("\n[red]No characters found in the database.[/red]")
+            console.input("[yellow]Press Enter to return...[/yellow]")
             return None
-
-        print(f"\n{BLUE}Available Characters:{RESET}\n")
+        console.print("\n[blue]Available Characters:[/blue]\n")
         for cid, name, race, char_class in characters:
-            print(f"{RED}{cid}. {name}{RESET} | Race: {race} | Class: {char_class}")
-
-        selected = input(f"\n{YELLOW}Enter character ID: {RESET}").strip()
-
+            console.print(f"[red]{cid}.[/red] {name} | Race: {race} | Class: {char_class}")
+        selected = console.input("\n[bold yellow]Enter character ID: [/bold yellow]").strip()
         if selected.isdigit():
             selected_id = int(selected)
             cursor.execute("SELECT * FROM characters WHERE id = ?", (selected_id,))
             character = cursor.fetchone()
             if character:
                 return character
-
-    print(f"{RED}Invalid ID. Returning to the quest menu.{RESET}")
-    input(f"{YELLOW}Press Enter to continue...{RESET}")
+    console.print("[red]Invalid ID. Returning to the quest menu.[/red]")
+    console.input("[yellow]Press Enter to continue...[/yellow]")
     return None
 
 
 def launch_quest(quest_fn):
     """Wrapper that prompts for a character before running ``quest_fn``."""
-
     character = choose_character()
     if character:
         quest_fn(character)
 
+
 def inventory_menu():
     """Allow adding, removing, or viewing a character's inventory."""
-
     character = choose_character()
     if not character:
         return
@@ -59,38 +57,37 @@ def inventory_menu():
         clear_console()
         items = db_manager.get_inventory(character_id)
         if items:
-            print(f"{BLUE}{name}'s Inventory:{RESET}\n")
+            console.print(f"[blue]{name}'s Inventory:[/blue]\n")
             for item, qty in items:
-                print(f"{RED}{item}{RESET} x{qty}")
+                console.print(f"[red]{item}[/red] x{qty}")
         else:
-            print(f"{RED}Inventory is empty.{RESET}")
-        input(f"\n{YELLOW}Press Enter to continue...{RESET}")
+            console.print("[red]Inventory is empty.[/red]")
+        console.input("\n[yellow]Press Enter to continue...[/yellow]")
 
     def add_item():
         clear_console()
-        item = input("Item name: ").strip()
-        qty = input("Quantity: ").strip()
+        item = console.input("Item name: ").strip()
+        qty = console.input("Quantity: ").strip()
         try:
             qty = int(qty)
         except ValueError:
             qty = 1
         db_manager.add_item(character_id, item, qty)
-        print("\nItem added!")
-        input(f"{YELLOW}Press Enter to continue...{RESET}")
+        console.print("\nItem added!")
+        console.input("[yellow]Press Enter to continue...[/yellow]")
 
     def remove_item():
         clear_console()
-        item = input("Item name to remove: ").strip()
-        qty = input("Quantity: ").strip()
+        item = console.input("Item name to remove: ").strip()
+        qty = console.input("Quantity: ").strip()
         try:
             qty = int(qty)
         except ValueError:
             qty = 1
         db_manager.remove_item(character_id, item, qty)
-        print("\nItem removed (if it existed).")
-        input(f"{YELLOW}Press Enter to continue...{RESET}")
+        console.print("\nItem removed (if it existed).")
+        console.input("[yellow]Press Enter to continue...[/yellow]")
 
-    from fableforge.main import Console
     options = [
         {"label": "View Inventory", "action": view_inventory},
         {"label": "Add Item", "action": add_item},
@@ -99,8 +96,8 @@ def inventory_menu():
     ]
     Console.menu_handler(f"Inventory Menu - {name}", options)
 
+
 def quest_menu():
-    from fableforge.main import Console, play_game
     options = [
         {"label": "List Quests", "action": list_quests},
         {"label": "Complete Quest", "action": complete_quest},
@@ -116,47 +113,42 @@ def whisper_quest_entry(character):
     character_id = character[0]
 
     clear_console()
-    print(f"{BLUE}FableForge - Whispers of the Crystal Shard{RESET}\n")
-    print("What would you like to do?")
-    print(f"{RED}1.{RESET} Start the quest")
-    print(f"{RED}2.{RESET} Resume Saved Quest")
-    print(f"{RED}3.{RESET} Back")    
+    console.print("[blue]FableForge - Whispers of the Crystal Shard[/blue]\n")
+    console.print("What would you like to do?")
+    console.print("[red]1.[/red] Start the quest")
+    console.print("[red]2.[/red] Resume Saved Quest")
+    console.print("[red]3.[/red] Back")
 
-    choice = input(f"\n{YELLOW}Choose an option: {RESET}").strip()
-
+    choice = console.input("\n[bold yellow]Choose an option: [/bold yellow]").strip()
     if choice == "1":
         db.reset_quest_progress(character_id, "Whispers of the Crystal Shard")
         quest_one(character, character_id, db)
-
     elif choice == "2":
         progress = db.load_quest_progress(character_id, "Whispers of the Crystal Shard")
         if not progress:
-            print(f"{RED}No saved progress found. Starting fresh.{RESET}")
+            console.print("[red]No saved progress found. Starting fresh.[/red]")
             quest_one(character, character_id, db)
-
         else:
-            print(f"{BLUE}Resuming saved quest progress...{RESET}")
-            print(f"{YELLOW}Progress: {progress}{RESET}")
+            console.print("[blue]Resuming saved quest progress...[/blue]")
+            console.print(f"[yellow]Progress: {progress}[/yellow]")
             quest_one(character, character_id, db, progress)
-    else:  
-        print(f"{RED}Returning to the quest menu.{RESET}")
-        input(f"{YELLOW}Press Enter to continue...{RESET}")
-        return
-        
+    else:
+        console.print("[red]Returning to the quest menu.[/red]")
+        console.input("[yellow]Press Enter to continue...[/yellow]")
+
 
 # Quests
+
 def list_quests():
-   options = [
+    options = [
         {"label": "Whispers of the Crystal Shard", "action": lambda: launch_quest(whisper_quest_entry)},
         {"label": "The Forgotten Ember", "action": lambda: launch_quest(quest_two)},
-        {"label": "Back to Previous Menu", "action": quest_menu}
+        {"label": "Back to Previous Menu", "action": quest_menu},
     ]
-   from fableforge.main import Console
-   Console.menu_handler("FableForge - Quests", options)
+    Console.menu_handler("FableForge - Quests", options)
+
 
 def complete_quest():
     clear_console()
-    print("Complete a Quest")
-    input("Press Enter to continue...")
-    
-
+    console.print("Complete a Quest")
+    console.input("Press Enter to continue...")
