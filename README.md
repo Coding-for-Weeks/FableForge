@@ -56,7 +56,6 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
   - `quest_menu()`: Lists quests and inventory management.
 
 ### 📚 Files
-
 - Located under `src/fableforge/`:
 
   - **`main.py`**: The entry point of the application. It handles the main menu, character creation, and initialization.
@@ -93,7 +92,6 @@ Install the development extras and run pytest:
 pip install -e .[dev]       # install with pytest
 pytest                      # run tests
 ```
-
 Continuous integration runs the same tests on GitHub Actions.
 
 ### 🖍️ Logging
