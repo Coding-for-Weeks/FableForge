@@ -1,4 +1,5 @@
 # 🔱 FableForge
+[![Tests](https://github.com/yourusername/FableForge/actions/workflows/tests.yml/badge.svg)](https://github.com/yourusername/FableForge/actions/workflows/tests.yml)
 
 Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dungeons & Dragons! Create characters, complete quests, and explore a world full of possibilities. 🧙‍♂️✨
 
@@ -64,11 +65,20 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
 ### ▶️ Running the Game
 
 1. Clone the repository or copy the script.
-2. Run the script using Python:
+2. From the project root, launch the game module with Python:
 
-   ```bash
-   python main.py
-   ```
+```bash
+python -m fableforge.main
+```
+
+### 🧪 Running Tests
+
+Install the development extras and run pytest:
+
+```bash
+pip install -e .[dev]       # install with pytest
+pytest                      # run tests
+```
 
 ### 🖍️ Logging
 

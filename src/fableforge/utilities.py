@@ -2,6 +2,7 @@ import os
 import platform
 import subprocess
 import logging
+import sys
 
 # Utility Functions
 def clear_console():
@@ -15,11 +16,13 @@ def clear_console():
 
 def exiting():
     clear_console()
-    os._exit(0)
+    sys.exit(0)
 
 def setup_logging():
     """Configure error logging and ensure the log directory exists."""
-    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    root_dir = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
     log_dir = os.path.join(root_dir, "logs")
     os.makedirs(log_dir, exist_ok=True)
 
