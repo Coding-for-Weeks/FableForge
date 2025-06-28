@@ -1,4 +1,5 @@
 # 🔱 FableForge
+[![Tests](https://github.com/yourusername/FableForge/actions/workflows/tests.yml/badge.svg)](https://github.com/yourusername/FableForge/actions/workflows/tests.yml)
 
 Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dungeons & Dragons! Create characters, complete quests, and explore a world full of possibilities. 🧙‍♂️✨
 
