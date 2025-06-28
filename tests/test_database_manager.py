@@ -1,5 +1,5 @@
 import sqlite3
-from fableforge.database_manager import DatabaseManager
+from fableforge.data.database_manager import DatabaseManager
 
 
 def make_db(tmp_path):
