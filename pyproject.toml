@@ -6,23 +6,30 @@ build-backend = "setuptools.build_meta"
 name = "fableforge"
 version = "0.1.0"
 description = "Text-driven D&D-style adventure game"
-authors = [{ name = "Your Name", email = "you@example.com" }]
+authors = [{ name = "Noah Weeks", email = "weeks.it.solutions@gmail.com" }]
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.8"
 
 # If you add external libs, list them here
 dependencies = [
-    # "rich>=13.0",          # example of a console library
+    # "rich>=13.0"
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = [
+    "pytest"
+]
 
-# Source layout
+
 [tool.setuptools]
-package-dir = { "" = "src" }          # tells setuptools that packages live in src/
-packages = ["fableforge"]             # explicit list keeps it simple
+package-dir = { "" = "src" }          
+packages = ["fableforge"]             
 
-# Optional console command so users can just type `fableforge`
+
 [project.scripts]
 fableforge = "fableforge.main:main"
+
+[project.urls]
+Homepage = "https://github.com/Coding-for-Weeks/FableForge"
+Issues = "https://github.com/Coding-for-Weeks/FableForge/issues"
