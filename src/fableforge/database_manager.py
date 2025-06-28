@@ -115,3 +115,50 @@ class DatabaseManager:
                 (character_id,),
             )
             return cursor.fetchall()
+
+# End of inventory management -------------------------------------------
+
+# Save quest progress -------------------------------------------------
+    def save_quest_progress(self, character_id, quest_name, progress_step):
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT id FROM quests WHERE character_id = ? AND name = ?",
+                (character_id, quest_name)
+            )
+            exists = cursor.fetchone()
+            if not exists:
+                cursor.execute(
+                    "INSERT INTO quests (character_id, name, progress, completed) VALUES (?, ?, ?, ?)",
+                    (character_id, quest_name, progress_step, 0)
+                )
+            else:
+                cursor.execute(
+                    "UPDATE quests SET progress = ? WHERE character_id = ? AND name = ?",
+                    (progress_step, character_id, quest_name)
+                )
+            conn.commit()
+# End of save quest progress -------------------------------------------
+
+# load quest progress -------------------------------------------------
+    def load_quest_progress(self, character_id, quest_name):
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT progress FROM quests WHERE character_id = ? AND name = ?",
+                (character_id, quest_name)
+            )
+            row = cursor.fetchone()
+            return row[0] if row else None
+# End of load quest progress -------------------------------------------
+
+# Delete quest progress -------------------------------------------------
+    def reset_quest_progress(self, character_id, quest_name):
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM quests WHERE character_id = ? AND name = ?",
+                (character_id, quest_name)
+            )
+            conn.commit()
+# End of delete quest progress -------------------------------------------
