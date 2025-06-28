@@ -11,7 +11,11 @@ class DatabaseManager:
         self.db_name = os.path.join(db_dir, db_name)
 
     def connect(self):
-        return sqlite3.connect(self.db_name)
+        """Return a SQLite connection with foreign keys enabled."""
+        conn = sqlite3.connect(self.db_name)
+        # Ensure ON DELETE CASCADE and other FK constraints are active
+        conn.execute("PRAGMA foreign_keys = ON")
+        return conn
 
     def initialize_tables(self):
         with self.connect() as conn:
@@ -161,4 +165,6 @@ class DatabaseManager:
                 (character_id, quest_name)
             )
             conn.commit()
+
 # End of delete quest progress -------------------------------------------
+
