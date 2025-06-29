@@ -1,22 +1,47 @@
-### 📝 Task Description
-_Describe the feature or fix here._
+
+# FableForge Issue Template
+
+## 🧩 Feature or Fix Summary
+
+<!-- Describe the purpose of this issue clearly. What are you building or fixing? -->
+
+## 🎯 Goals
+
+- [ ] Clearly state the goal of this task
+- [ ] Ensure it fits into the FableForge roadmap
 
 ---
 
-### ✅ Checklist
+## ✅ Checklist
 
 - [ ] Define requirements
-- [ ] Implement feature or fix
-- [ ] Write tests if needed
-- [ ] Link to DB or Game loop
-- [ ] Commit and push
-- [ ] Create PR and merge
+- [ ] Plan structure or flow
+- [ ] Implement code
+- [ ] Write or update tests
+- [ ] Commit with clear message
+- [ ] Push to feature branch
+- [ ] Create and merge PR
 
 ---
 
-### 📊 Metadata
+## 📊 Task Metadata
 
-- **Priority**: Medium
-- **Size**: M
-- **Status**: Todo
-- **Start Date**: YYYY-MM-DD
+| Field       | Value        |
+|-------------|--------------|
+| **Priority**| Medium       |
+| **Size**    | M            |
+| **Status**  | Backlog      |
+| **Start**   | YYYY-MM-DD   |
+| **Target**  | YYYY-MM-DD   |
+
+---
+
+## 📂 Related
+<!-- Link related issues, PRs, or discussions -->
+- Issue #...
+- PR #...
+
+---
+
+## 🧠 Notes
+<!-- Add notes, blockers, ideas, or design details -->
