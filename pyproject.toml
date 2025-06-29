@@ -13,7 +13,7 @@ requires-python = ">=3.8"
 
 # If you add external libs, list them here
 dependencies = [
-    # "rich>=13.0"
+    "rich>=13.0"
 ]
 
 [project.optional-dependencies]
@@ -28,7 +28,7 @@ packages = ["fableforge"]
 
 
 [project.scripts]
-fableforge = "fableforge.main:main"
+fableforge = "fableforge.engine.main:main"
 
 [project.urls]
 Homepage = "https://github.com/Coding-for-Weeks/FableForge"
