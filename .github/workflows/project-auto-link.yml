@@ -1,0 +1,17 @@
+name: Auto-add issues to Project Board
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add_to_project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add issue to GitHub Project (v2)
+        run: |
+          curl -X POST -H "Authorization: bearer ${{ secrets.GH_TOKEN }}" \
+               -H "Content-Type: application/json" \
+               -d '{
+                  "query": "mutation { addProjectV2ItemById(input: {projectId: \"PVT_kwHOBtyla84AvEyD\", contentId: \"${{ github.event.issue.node_id }}\"}) { item { id }}}"
+               }' https://api.github.com/graphql
