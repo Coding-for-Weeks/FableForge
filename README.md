@@ -80,7 +80,7 @@ Welcome to **FableForge**, a Python-based, text-driven adventure inspired by Dun
 2. From the project root, launch the game module with Python or the console script:
 
 ```bash
-python -m fableforge.main
+python -m fableforge.engine.main
 fableforge
 ```
 
