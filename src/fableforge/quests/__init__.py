@@ -4,7 +4,7 @@ from fableforge.utils.utilities import clear_console
 from fableforge.data.database_manager import DatabaseManager
 from fableforge.quests.quest_one import quest_one
 from fableforge.quests.quest_two import quest_two
-from fableforge.engine.main import Console, play_game
+from fableforge.menus import Console, play_game
 from rich.console import Console as RichConsole
 
 console = RichConsole()
