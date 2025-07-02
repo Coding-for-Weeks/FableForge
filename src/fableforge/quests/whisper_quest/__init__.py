@@ -3,7 +3,8 @@
 from rich.console import Console
 
 from fableforge.utils.utilities import clear_console
-from . import scene_intro, scene_encounter, scene_puzzle, scene_conclusion
+from . import scene_intro, scene_puzzle, scene_conclusion
+from .encounters import scene_encounters
 
 console = Console()
 
@@ -23,11 +24,14 @@ class WhisperQuest:
     def start(self):
         """Run scenes sequentially based on ``self.progress``."""
         scene_map = {
-            "intro": scene_intro.run,
-            "encounter": scene_encounter.run,
-            "puzzle": scene_puzzle.run,
-            "conclusion": scene_conclusion.run,
+        "intro": scene_intro.run,
+        "puzzle": scene_puzzle.run,
+        "conclusion": scene_conclusion.run,
         }
+        # Add dynamic encounters to the scene map
+        for name, module in scene_encounters.items():
+            scene_map[name] = module.run
+
 
         current = self.progress
         while current:

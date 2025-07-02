@@ -37,3 +37,9 @@ def setup_logging():
             f"Warning: Cannot write to log file {log_file}. Check file permissions."
         )
 
+from rich.console import Console
+
+console = Console()
+
+def pause():
+    console.input("[dim][Press Enter to continue...][/dim]")
