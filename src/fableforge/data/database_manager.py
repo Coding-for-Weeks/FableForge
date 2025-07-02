@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import logging
 
 class DatabaseManager:
     def __init__(self, db_name="dnd_game.db"):
@@ -12,15 +13,20 @@ class DatabaseManager:
 
     def connect(self):
         """Return a SQLite connection with foreign keys enabled."""
-        conn = sqlite3.connect(self.db_name)
-        # Ensure ON DELETE CASCADE and other FK constraints are active
-        conn.execute("PRAGMA foreign_keys = ON")
-        return conn
+        try:
+            conn = sqlite3.connect(self.db_name)
+            #Ensure ON DELETE CASCADE and other FK constraints are active
+            conn.execute("PRAGMA foreign_keys = ON")
+            return conn
+        except sqlite3.Error as e:
+            logging.error("Database connection failed: %s", e)
+            raise
 
     def initialize_tables(self):
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            tables = {
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                tables = {
                 "characters": """
                     CREATE TABLE IF NOT EXISTS characters (
                         id INTEGER PRIMARY KEY,
@@ -58,78 +64,95 @@ class DatabaseManager:
                     )
                 """,
             }
-            for table, create_sql in tables.items():
-                cursor.execute(create_sql)
+                for table, create_sql in tables.items():
+                    cursor.execute(create_sql)
 
-            conn.commit()
+                conn.commit()
+        except sqlite3.Error as e:
+            logging.error("Failed to initialize database tables: %s", e)
+            raise
 
 
-    # Inventory management -------------------------------------------------
+    # Inventory management ---------------------------------------------
 
     def add_item(self, character_id, item_name, quantity=1):
         """Add ``quantity`` of ``item_name`` to ``character_id``'s inventory."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT id, quantity FROM inventory WHERE character_id = ? AND item_name = ?",
-                (character_id, item_name),
-            )
-            row = cursor.fetchone()
-            if row:
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
                 cursor.execute(
-                    "UPDATE inventory SET quantity = ? WHERE id = ?",
-                    (row[1] + quantity, row[0]),
+                    "SELECT id, quantity FROM inventory WHERE character_id = ? AND item_name = ?",
+                    (character_id, item_name),
                 )
-            else:
-                cursor.execute(
-                    "INSERT INTO inventory (item_name, quantity, character_id) VALUES (?, ?, ?)",
-                    (item_name, quantity, character_id),
-                )
-            conn.commit()
-
-    def remove_item(self, character_id, item_name, quantity=1):
-        """Remove ``quantity`` of ``item_name`` from ``character_id``'s inventory."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT id, quantity FROM inventory WHERE character_id = ? AND item_name = ?",
-                (character_id, item_name),
-            )
-            row = cursor.fetchone()
-            if row:
-                remaining = row[1] - quantity
-                if remaining > 0:
+                row = cursor.fetchone()
+                if row:
+                    # Item exists, update quantity
                     cursor.execute(
                         "UPDATE inventory SET quantity = ? WHERE id = ?",
-                        (remaining, row[0]),
+                        (row[1] + quantity, row[0]),
                     )
                 else:
                     cursor.execute(
-                        "DELETE FROM inventory WHERE id = ?",
-                        (row[0],),
+                        "INSERT INTO inventory (item_name, quantity, character_id) VALUES (?, ?, ?)",
+                        (item_name, quantity, character_id),
                     )
                 conn.commit()
+        except sqlite3.Error as e:
+            logging.error("Error adding item: %s", e)
+            raise
+
+    def remove_item(self, character_id, item_name, quantity=1):
+        """Remove ``quantity`` of ``item_name`` from ``character_id``'s inventory."""
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT id, quantity FROM inventory WHERE character_id = ? AND item_name = ?",
+                    (character_id, item_name),
+                )
+                row = cursor.fetchone()
+                if row:
+                    remaining = row[1] - quantity
+                    if remaining > 0:
+                        cursor.execute(
+                            "UPDATE inventory SET quantity = ? WHERE id = ?",
+                            (remaining, row[0]),
+                        )
+                    else:
+                        cursor.execute(
+                            "DELETE FROM inventory WHERE id = ?",
+                            (row[0],),
+                        )
+                    conn.commit()
+        except sqlite3.Error as e:
+            logging.error("Error removing item: %s", e)
+            raise
 
     def get_inventory(self, character_id):
         """Return a list of ``(item_name, quantity)`` for ``character_id``."""
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT item_name, quantity FROM inventory WHERE character_id = ?",
-                (character_id,),
-            )
-            return cursor.fetchall()
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT item_name, quantity FROM inventory WHERE character_id = ?",
+                    (character_id,),
+                )
+                return cursor.fetchall()
+        except sqlite3.Error as e:
+            logging.error("Error retrieving inventory: %s", e)
+            raise
 
-# End of inventory management -------------------------------------------
+# End of inventory management ------------------------------------------
 
-# Save quest progress -------------------------------------------------
+# Save quest progress --------------------------------------------------
     def save_quest_progress(self, character_id, quest_name, progress_step):
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT id FROM quests WHERE character_id = ? AND name = ?",
-                (character_id, quest_name)
-            )
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT id FROM quests WHERE character_id = ? AND name = ?",
+                    (character_id, quest_name)
+                )
             exists = cursor.fetchone()
             if not exists:
                 cursor.execute(
@@ -142,29 +165,38 @@ class DatabaseManager:
                     (progress_step, character_id, quest_name)
                 )
             conn.commit()
+        except sqlite3.Error as e:
+            logging.error("Error saving quest progress: %s", e)
+            raise
 # End of save quest progress -------------------------------------------
 
-# load quest progress -------------------------------------------------
+# load quest progress --------------------------------------------------
     def load_quest_progress(self, character_id, quest_name):
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT progress FROM quests WHERE character_id = ? AND name = ?",
-                (character_id, quest_name)
-            )
-            row = cursor.fetchone()
-            return row[0] if row else None
-# End of load quest progress -------------------------------------------
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT progress FROM quests WHERE character_id = ? AND name = ?",
+                    (character_id, quest_name)
+                )
+                row = cursor.fetchone()
+                return row[0] if row else None
+        except sqlite3.Error as e:
+            logging.error("Error loading quest progress: %s", e)
+            raise
+# End of load quest progress --------------------------------------------
 
 # Delete quest progress -------------------------------------------------
     def reset_quest_progress(self, character_id, quest_name):
-        with self.connect() as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "DELETE FROM quests WHERE character_id = ? AND name = ?",
-                (character_id, quest_name)
-            )
-            conn.commit()
-
-# End of delete quest progress -------------------------------------------
-
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "DELETE FROM quests WHERE character_id = ? AND name = ?",
+                    (character_id, quest_name)
+                )
+                conn.commit()
+        except sqlite3.Error as e:
+            logging.error("Error resetting quest progress: %s", e)
+            raise
+# End of delete quest progress ------------------------------------------
