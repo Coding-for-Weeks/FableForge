@@ -36,9 +36,11 @@ class CharacterCreator:
             clear_console()
             CharacterCreator.print_races(races)
             race_input = console.input("\n[bold yellow]Enter your race:[/bold yellow] ").strip().title()
-            if race_input in races:
+            race_confirmed = console.input(f"you chose [bold yellow]{race_input}[/bold yellow]. Is this correct? (y/n):")
+            if race_confirmed.lower() == 'y':
                 return CharacterCreator.select_subrace(race_input, races[race_input])
-            Console.invalid_choice()
+            elif race_confirmed != 'n':
+                Console.invalid_choice()
 
     @staticmethod
     def print_races(races):
@@ -58,9 +60,120 @@ class CharacterCreator:
             for sr in subraces:
                 console.print(f"  [red]- {sr}[/red]")
             choice = console.input("\n[bold yellow]Enter your subrace:[/bold yellow] ").strip().title()
-            if choice in subraces:
-                return race, choice
-            Console.invalid_choice()
+            confirmed = console.input(f"You chose [bold yellow]{choice}[/bold yellow]. Is this correct? (y/n): ")
+            if confirmed.lower() == 'y':
+                if choice in subraces:
+                    return race, choice
+            elif confirmed!= 'n':    
+                Console.invalid_choice()
+
+    @staticmethod
+    def apply_race_bonus(stats, race, subrace=None):
+        """Apply race and subrace stat bonuses."""
+        from copy import deepcopy
+
+        STAT_KEY_MAP = {
+            "STR": "strength",
+            "DEX": "dexterity",
+            "CON": "constitution",
+            "INT": "intelligence",
+            "WIS": "wisdom",
+            "CHA": "charisma",
+        }
+        RACE_STATS = {
+            "Gnome": {
+                "base": {"INT": 2},
+                "Rock Gnome": {"CON": 1},
+                "Forest Gnome": {"DEX": 1},
+                "Deep Gnome": {"DEX": 1},
+            },
+            "Dwarf": {
+                "base": {"CON": 2},
+                "Hill Dwarf": {"WIS": 1},
+                "Mountain Dwarf": {"STR": 2},
+                "Duergar": {"STR": 1},
+            },
+            "Elf": {
+                "base": {"DEX": 2},
+                "High Elf": {"INT": 1},
+                "Wood Elf": {"WIS": 1},
+                "Dark Elf": {"CHA": 1},
+            },
+            "Half-Orc": {"base": {"STR": 2, "CON": 1}},
+            "Goliath": {"base": {"STR": 2, "CON": 1}},
+            "Human": {"base": {"STR": 1, "DEX": 1, "CON": 1, "INT": 1, "WIS": 1, "CHA": 1}},
+            "Dragonborn": {"base": {"STR": 2, "CHA": 1}},
+            "Kobold": {"base": {"DEX": 2, "STR": -2}},
+            "Tiefling": {"base": {"CHA": 2, "INT": 1}},
+        }
+
+        modified_stats = deepcopy(stats)
+        race_data = RACE_STATS.get(race)
+
+        if not race_data:
+            return modified_stats  # unknown race, return original stats
+
+        # Apply base race bonuses
+        base_bonuses = race_data.get("base") if isinstance(race_data, dict) else race_data
+        for stat, bonus in base_bonuses.items():
+            key = STAT_KEY_MAP.get(stat, stat)
+            modified_stats[key] += bonus
+
+        # Apply subrace bonuses if available and applicable
+        if subrace and isinstance(race_data, dict):
+            sub_bonuses = race_data.get(subrace)
+            if sub_bonuses:
+                for stat, bonus in sub_bonuses.items():
+                    key = STAT_KEY_MAP.get(stat, stat)
+                    modified_stats[key] += bonus
+
+        return modified_stats
+
+    @staticmethod
+    def apply_class_bonus(stats, char_class):
+        """Apply class stat bonuses and penalties to the given stats dict."""
+        CLASS_STATS = {
+            "Fighter": {"STR": 2, "CON": 1, "INT": -1},
+            "Wizard": {"INT": 2, "WIS": 1, "STR": -1, "CON": -1},
+            "Rogue": {"DEX": 2, "INT": 1, "STR": -1},
+            "Cleric": {"WIS": 2, "CHA": 1, "DEX": -1},
+            "Bard": {"CHA": 2, "DEX": 1, "STR": -1},
+            "Warlock": {"CHA": 2, "INT": 1, "CON": -1},
+            "Druid": {"WIS": 2, "CON": 1, "CHA": -1},
+            "Barbarian": {"STR": 2, "CON": 1, "INT": -1, "CHA": -1},
+            "Monk": {"DEX": 2, "WIS": 1, "STR": -1},
+            "Ranger": {"DEX": 2, "WIS": 1, "CHA": -1},
+            "Paladin": {"STR": 2, "CHA": 1, "DEX": -1},
+            "Sorcerer": {"CHA": 2, "CON": 1, "WIS": -1},
+            "Artificer": {"INT": 2, "CON": 1, "CHA": -1},
+            "Hexblade": {"CHA": 2, "STR": 1, "DEX": -1},
+            "Psion": {"INT": 2, "WIS": 1, "STR": -1, "CHA": -1},
+            "Warlord": {"CHA": 2, "STR": 1, "INT": -1},
+            "Swashbuckler": {"DEX": 2, "CHA": 1, "CON": -1},
+        }
+        STAT_KEY_MAP = {
+            "STR": "strength",
+            "DEX": "dexterity",
+            "CON": "constitution",
+            "INT": "intelligence",
+            "WIS": "wisdom",
+            "CHA": "charisma",
+        }
+    
+        from copy import deepcopy
+        modified_stats = deepcopy(stats)
+    
+        bonuses = CLASS_STATS.get(char_class)
+        if not bonuses:
+            return modified_stats  # No changes if unknown class
+    
+        for short_key, bonus in bonuses.items():
+            long_key = STAT_KEY_MAP.get(short_key, short_key)
+            if long_key in modified_stats:
+                modified_stats[long_key] += bonus
+    
+        return modified_stats
+
 
     @staticmethod
     def select_class():
@@ -83,9 +196,12 @@ class CharacterCreator:
             clear_console()
             CharacterCreator.print_classes(basic, advanced)
             choice = console.input("\n[bold yellow]Choose your class:[/bold yellow] ").strip().capitalize()
-            if choice in basic + advanced:
-                return choice
-            Console.invalid_choice()
+            confirmed = console.input(f"You chose [bold yellow]{choice}[/bold yellow]. Is this correct? (y/n): ")
+            if confirmed.lower() == 'y':
+                if choice in basic or choice in advanced:
+                    return choice
+            elif confirmed != 'n':
+                Console.invalid_choice()
 
     @staticmethod
     def print_classes(basic, advanced):
@@ -116,12 +232,12 @@ class CharacterCreator:
     @staticmethod
     def manual_stats():
         stats = {k: 0 for k in [
-            "strength",
-            "dexterity",
-            "intelligence",
-            "charisma",
-            "wisdom",
-            "constitution",
+            "STR",
+            "DEX",
+            "INT",
+            "CHA",
+            "WIS",
+            "CON",
         ]}
         total = 75
         console.print(f"You have {total} points to distribute (8-18 per stat):")
@@ -141,7 +257,18 @@ class CharacterCreator:
                     console.print(f"Invalid allocation. Enter a value between 8 and {max_alloc}.")
                 except ValueError:
                     console.print("Enter a valid number.")
-        return Stats(**stats)
+        key_map = {
+            "STR": "strength",
+            "DEX": "dexterity",
+            "CON": "constitution",
+            "INT": "intelligence",
+            "WIS": "wisdom",
+            "CHA": "charisma",
+        }
+
+        converted_stats = {key_map[k]: v for k, v in stats.items()}
+
+        return Stats(**converted_stats)
 
     @staticmethod
     def random_stats():
@@ -169,7 +296,54 @@ def create_character():
     name = CharacterCreator.get_character_name()
     race, subrace = CharacterCreator.select_race()
     char_class = CharacterCreator.select_class()
+
+    # Generate base stats once (don't reroll unless explicitly allowed)
     stats = CharacterCreator.generate_stats()
+    base_stats_dict = stats.__dict__
+
+    # Loop in case user wants to re-pick race for different bonuses
+    while True:
+        race_adjusted_stats = CharacterCreator.apply_race_bonus(base_stats_dict, race, subrace)
+        modified_stats_dict = CharacterCreator.apply_class_bonus(race_adjusted_stats, char_class)
+
+        # Show stat changes live
+        clear_console()
+        console.print("[blue]FableForge - Character Creation![/blue]")
+        console.print("\n[bold blue]Stat Progression: Base → Race → Class[/bold blue]\n")
+        
+        for stat in base_stats_dict:
+            base = base_stats_dict[stat]
+            race_val = CharacterCreator.apply_race_bonus(base_stats_dict, race, subrace)[stat]
+            final = modified_stats_dict[stat]
+        
+            race_diff = race_val - base
+            class_diff = final - race_val
+            total_diff = final - base
+        
+            color_race = "green" if race_diff > 0 else ("red" if race_diff < 0 else "white")
+            color_class = "green" if class_diff > 0 else ("red" if class_diff < 0 else "white")
+            color_total = "bold green" if total_diff > 0 else ("bold red" if total_diff < 0 else "white")
+        
+            console.print(
+                f"[cyan]{stat.capitalize():<13}[/cyan] "
+                f"[yellow]{base:<3}[/yellow] → "
+                f"[{color_race}]{race_val:<3}[/{color_race}] → "
+                f"[{color_class}]{final:<3}[/{color_class}] "
+                f"([{color_total}]{'+' if total_diff >= 0 else ''}{total_diff}[/{color_total}])"
+            )
+
+        # Confirm or retry race selection
+        confirm = console.input("\n[bold yellow]Accept these stats? (y/n): [/bold yellow]").strip().lower()
+        if confirm == 'y':
+            break
+        elif confirm == 'n':
+            which_confirm = console.input("[bold yellow]Which would you like to change? (r/c): [/bold yellow]").strip().lower()
+            if which_confirm == 'r':
+                race, subrace = CharacterCreator.select_race()  # re-pick race only
+            elif which_confirm == 'c':
+                char_class = CharacterCreator.select_class()  # re-pick class only
+
+    stats = Stats(**modified_stats_dict)
 
     clear_console()
     console.print("[blue]FableForge - Character Summary![/blue]")
@@ -181,6 +355,7 @@ def create_character():
     for field, value in stats.__dict__.items():
         console.print(f"  [red]{field.capitalize()}[/red]: {value}")
 
+    # Save to database
     db_manager = DatabaseManager()
     with db_manager.connect() as conn:
         cursor = conn.cursor()
@@ -208,7 +383,6 @@ def create_character():
         conn.commit()
         console.print("\n[blue]Character saved to database![/blue]")
         console.input("\n[bold yellow]Press Enter to continue...[/bold yellow]")
-
 
 def character():
     clear_console()
