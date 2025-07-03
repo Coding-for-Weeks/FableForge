@@ -36,6 +36,7 @@ class CharacterCreator:
             clear_console()
             CharacterCreator.print_races(races)
             race_input = console.input("\n[bold yellow]Enter your race:[/bold yellow] ").strip().title()
+            race_confirmed = console.input("you chose [bold yellow]{}[/bold yellow]. Is this correct? (y/n):")
             if race_input in races:
                 return CharacterCreator.select_subrace(race_input, races[race_input])
             Console.invalid_choice()
